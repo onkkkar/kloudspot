@@ -1,6 +1,7 @@
 import { Link, useLocation } from "@tanstack/react-router";
 import { ExternalLink, Menu, Power } from "lucide-react";
 import { VscHome } from "react-icons/vsc";
+import { logout } from "../../api/auth";
 
 interface SidebarProps {
   isSidebarOpen: boolean;
@@ -70,6 +71,7 @@ export function Sidebar({ isSidebarOpen, setIsSidebarOpen }: SidebarProps) {
         {/* Logout Button - Bottom Left */}
         <div className="mt-auto h-12.5 w-54 px-4 pb-4">
           <button
+            onClick={logout}
             className="flex items-center gap-4 text-left text-base font-medium text-white transition-colors hover:opacity-80"
             aria-label="Logout"
           >

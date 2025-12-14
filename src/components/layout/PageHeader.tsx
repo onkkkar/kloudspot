@@ -48,7 +48,7 @@ export function PageHeader({ title, dateText = "Today" }: PageHeaderProps) {
   };
 
   return (
-    <div className="mb-5 flex h-11 items-center justify-between px-4">
+    <div className="flex h-11 items-center justify-between px-8">
       {/* Left: Title */}
       <h1 className="text-xl text-[20px] font-medium text-[#1E1E1F]">
         {title}
@@ -60,7 +60,7 @@ export function PageHeader({ title, dateText = "Today" }: PageHeaderProps) {
           onClick={handleButtonClick}
           className="flex h-10 w-50 items-center gap-1 rounded-md border border-gray-300 bg-white py-2 pr-3 pl-3 transition-colors hover:bg-gray-50"
         >
-          <Calendar className="h-4 w-4 text-[#1E1E1F]" strokeWidth={1.5} />
+          <Calendar className="h-5 w-5 text-[#1E1E1F]" strokeWidth={1.5} />
           <span className="text-base font-normal text-[#1E1E1F]">
             {selectedDate}
           </span>

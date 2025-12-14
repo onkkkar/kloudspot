@@ -19,7 +19,6 @@ const donutData = [
   { name: "Males", value: 55, color: "#2A7F7D99" },
 ];
 
-// Fixed data for demographics analysis chart
 const demographicsData = [
   { time: "8:00", timeIndex: 0, male: 185, female: 140 },
   { time: "9:00", timeIndex: 1, male: 188, female: 142 },
@@ -44,7 +43,7 @@ export function DemographicSection() {
         </h2>
         <div className="flex h-76.75 w-74 flex-col items-start gap-4">
           <div className="h-44 w-44">
-            <ResponsiveContainer width="100%" height="100%">
+            <ResponsiveContainer width="100%" height="100%" minHeight={0}>
               <PieChart>
                 <Pie
                   data={donutData}
@@ -118,7 +117,7 @@ export function DemographicSection() {
           </div>
         </div>
         <div className="min-h-0 flex-1">
-          <ResponsiveContainer width="100%" height="100%">
+          <ResponsiveContainer width="100%" height="100%" minHeight={0}>
             <LineChart
               data={demographicsData}
               margin={{ top: 2, right: 0, left: 10, bottom: 25 }}

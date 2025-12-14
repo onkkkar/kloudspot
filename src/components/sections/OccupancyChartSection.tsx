@@ -9,22 +9,8 @@ import {
   ResponsiveContainer,
   ReferenceLine,
 } from "recharts";
-
-// Fixed data for the chart (will be replaced with API data later)
-const occupancyData = [
-  { time: "8:00", timeIndex: 0, count: 155 },
-  { time: "9:00", timeIndex: 1, count: 160 },
-  { time: "10:00", timeIndex: 2, count: 165 },
-  { time: "11:00", timeIndex: 3, count: 175 },
-  { time: "12:00", timeIndex: 4, count: 165 },
-  { time: "13:00", timeIndex: 5, count: 170 },
-  { time: "14:00", timeIndex: 6, count: 185 },
-  { time: "15:00", timeIndex: 7, count: 190 },
-  { time: "16:00", timeIndex: 8, count: 195 },
-  { time: "16:30", timeIndex: 8.5, count: 198 }, // LIVE point
-  { time: "17:00", timeIndex: 9, count: 200 },
-  { time: "18:00", timeIndex: 10, count: 200 },
-];
+import { useOccupancy } from "../../hooks";
+import { useMemo, useState, useEffect } from "react";
 
 // Custom label component for LIVE indicator
 interface LiveLabelProps {
@@ -75,6 +61,141 @@ const LiveLabel = ({ viewBox, value }: LiveLabelProps) => {
 };
 
 export function OccupancyChartSection() {
+  // Initialize siteId with fallback value, will be updated from API response
+  const [siteId, setSiteId] = useState<string | null>(
+    "b0fa4e2a-2159-42e7-b97b-2a9d481158f6",
+  );
+
+  // Calculate today's UTC time range - memoized to prevent recalculation on every render
+  const timeRange = useMemo(() => {
+    const now = new Date();
+    const startOfToday = new Date(
+      Date.UTC(
+        now.getUTCFullYear(),
+        now.getUTCMonth(),
+        now.getUTCDate(),
+        0,
+        0,
+        0,
+        0,
+      ),
+    );
+    const endOfToday = new Date();
+
+    return {
+      fromUtc: startOfToday.getTime(),
+      toUtc: endOfToday.getTime(),
+    };
+  }, []);
+
+  // Fetch occupancy data from API with auto-refetch every 30 sec
+  const {
+    data: occupancyData,
+    isLoading,
+    error,
+  } = useOccupancy(
+    siteId
+      ? {
+          siteId,
+          fromUtc: timeRange.fromUtc,
+          toUtc: timeRange.toUtc,
+        }
+      : null,
+    {
+      refetchInterval: 30000,
+    },
+  );
+
+  // Update siteId state when API response contains a different siteId to ensure future calls use correct ID
+  useEffect(() => {
+    const newSiteId = occupancyData?.siteId;
+    if (newSiteId && newSiteId !== siteId) {
+      setSiteId(newSiteId);
+    }
+  }, [occupancyData, siteId]);
+
+  // Transform API buckets array to chart data format
+  const chartData = useMemo(() => {
+    if (!occupancyData?.buckets || occupancyData.buckets.length === 0) {
+      return [];
+    }
+
+    return occupancyData.buckets.map((bucket, index) => {
+      // Extract time from local string
+      const timeMatch = bucket.local.match(/(\d{1,2}):\d{2}:\d{2}/);
+      const time = timeMatch ? timeMatch[1] + ":00" : `${index}:00`;
+
+      return {
+        time,
+        timeIndex: index,
+        count: Math.round(bucket.avg),
+        utc: bucket.utc,
+      };
+    });
+  }, [occupancyData]);
+
+  // Find the most recent non-zero bucket index for LIVE indicator by traversing backwards
+  const liveIndex = useMemo(() => {
+    if (!chartData.length) return -1;
+    for (let i = chartData.length - 1; i >= 0; i--) {
+      if (chartData[i].count > 0) {
+        return i;
+      }
+    }
+    return chartData.length - 1;
+  }, [chartData]);
+
+  // Calculate Y-axis max value
+  const maxCount = useMemo(() => {
+    if (!chartData.length) return 250;
+    const max = Math.max(...chartData.map((d) => d.count));
+
+    // Round up to nearest 50
+    return Math.ceil(max / 50) * 50 || 250;
+  }, [chartData]);
+
+  // Show loading spinner while data is being fetched
+  if (isLoading) {
+    return (
+      <div className="flex h-full flex-col rounded-lg border border-gray-200 bg-white p-4">
+        <div className="mb-3 flex items-center justify-between">
+          <h2 className="text-lg font-medium text-[#1E1E1F]">
+            Overall Occupancy
+          </h2>
+          <div className="flex items-center gap-2">
+            <div className="h-3 w-3 rounded-full bg-[#009490]"></div>
+            <span className="text-sm text-[#1E1E1F]">Occupancy</span>
+          </div>
+        </div>
+        <div className="flex flex-1 items-center justify-center">
+          <div className="h-8 w-8 animate-spin rounded-full border-4 border-gray-200 border-t-[#009490]"></div>
+        </div>
+      </div>
+    );
+  }
+
+  // Show error message if API call failed / no data
+  if (error || !chartData.length) {
+    return (
+      <div className="flex h-full flex-col rounded-lg border border-gray-200 bg-white p-4">
+        <div className="mb-3 flex items-center justify-between">
+          <h2 className="text-lg font-medium text-[#1E1E1F]">
+            Overall Occupancy
+          </h2>
+          <div className="flex items-center gap-2">
+            <div className="h-3 w-3 rounded-full bg-[#009490]"></div>
+            <span className="text-sm text-[#1E1E1F]">Occupancy</span>
+          </div>
+        </div>
+        <div className="flex flex-1 items-center justify-center">
+          <span className="text-sm text-gray-500">
+            {error ? "Failed to load occupancy data" : "No data available"}
+          </span>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex h-full flex-col rounded-lg border border-gray-200 bg-white p-4">
       <div className="mb-3 flex items-center justify-between">
@@ -87,9 +208,9 @@ export function OccupancyChartSection() {
         </div>
       </div>
       <div className="min-h-0 flex-1">
-        <ResponsiveContainer width="100%" height="100%">
+        <ResponsiveContainer width="100%" height="100%" minHeight={0}>
           <LineChart
-            data={occupancyData}
+            data={chartData}
             margin={{ top: 2, right: 0, left: 10, bottom: 25 }}
           >
             <defs>
@@ -106,19 +227,19 @@ export function OccupancyChartSection() {
             <XAxis
               type="number"
               dataKey="timeIndex"
-              domain={[-0.5, 10.5]}
+              domain={[-0.5, chartData.length - 0.5]}
               label={{ value: "Time", position: "bottom", offset: 2 }}
               stroke="#1E1E1F"
               strokeOpacity={0.3}
               tick={{ fill: "#1E1E1F", fontSize: 11 }}
               tickLine={false}
               tickFormatter={(value) => {
-                const dataPoint = occupancyData.find(
-                  (d) => d.timeIndex === value,
-                );
+                const dataPoint = chartData.find((d) => d.timeIndex === value);
                 return dataPoint ? dataPoint.time : "";
               }}
-              ticks={[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
+              ticks={chartData
+                .filter((_, i) => i % Math.ceil(chartData.length / 10) === 0)
+                .map((d) => d.timeIndex)}
             />
             <YAxis
               label={{
@@ -127,13 +248,12 @@ export function OccupancyChartSection() {
                 position: "insideLeft",
                 offset: 0,
               }}
-              domain={[0, 250]}
+              domain={[0, maxCount]}
               stroke="#1E1E1F"
               strokeOpacity={0.3}
               tick={{ fill: "#1E1E1F", fontSize: 11 }}
               tickLine={false}
               tickMargin={5}
-              ticks={[50, 100, 150, 200, 250]}
               tickFormatter={(value) => value.toString()}
               width={50}
             />
@@ -158,13 +278,15 @@ export function OccupancyChartSection() {
               strokeWidth={2}
               dot={false}
             />
-            <ReferenceLine
-              x={8.5}
-              stroke="#B42018"
-              strokeDasharray="5 5"
-              strokeWidth={2}
-              label={<LiveLabel value="LIVE" />}
-            />
+            {liveIndex >= 0 && (
+              <ReferenceLine
+                x={liveIndex}
+                stroke="#B42018"
+                strokeDasharray="5 5"
+                strokeWidth={2}
+                label={<LiveLabel value="LIVE" />}
+              />
+            )}
           </LineChart>
         </ResponsiveContainer>
       </div>

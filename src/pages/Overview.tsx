@@ -4,9 +4,9 @@ import { DemographicSection } from "../components/sections/DemographicSection";
 
 export function Overview() {
   return (
-    <div className="flex flex-col gap-3 px-4">
+    <div className="flex flex-col gap-3 px-4 pt-5">
       {/* Occupancy Stats Section */}
-      <div className="mb-10 flex flex-col">
+      <div className="flex flex-col">
         <div className="mb-3">
           <h2 className="text-lg font-medium text-[#1E1E1F]">Occupancy</h2>
         </div>
@@ -25,7 +25,9 @@ export function Overview() {
       {/* Demographics Section */}
       <div className="mb-10 flex flex-col">
         <div className="mb-3">
-          <h2 className="text-lg font-medium text-[#1E1E1F] mt-3">Demographics</h2>
+          <h2 className="mt-3 text-lg font-medium text-[#1E1E1F]">
+            Demographics
+          </h2>
         </div>
         <div className="w-full">
           <DemographicSection />

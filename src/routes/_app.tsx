@@ -1,10 +1,24 @@
-import { createFileRoute, Outlet, useLocation } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  Outlet,
+  useLocation,
+  redirect,
+} from "@tanstack/react-router";
 import { useState } from "react";
 import { TopNavBar } from "../components/layout/TopNavBar";
 import { Sidebar } from "../components/layout/Sidebar";
 import { PageHeader } from "../components/layout/PageHeader";
+import { isAuthenticated } from "../api/auth";
 
 export const Route = createFileRoute("/_app")({
+  beforeLoad: () => {
+    // Redirect to login if not authenticated
+    if (!isAuthenticated()) {
+      throw redirect({
+        to: "/login",
+      });
+    }
+  },
   component: AppLayout,
 });
 
@@ -28,13 +42,11 @@ function AppLayout() {
         setIsSidebarOpen={setIsSidebarOpen}
       />
 
-      <main className="flex flex-1 flex-col">
+      <main className="flex flex-1 flex-col bg-gray-50">
         <TopNavBar />
 
         {/* Page Header */}
-        <div className="px-4">
-          <PageHeader title={getPageTitle()} />
-        </div>
+        <PageHeader title={getPageTitle()} />
 
         {/* Content Area */}
         <div className="scrollbar-hide flex-1 overflow-y-auto px-4">

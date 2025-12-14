@@ -129,7 +129,7 @@ export function CrowdEntriesTable() {
   };
 
   return (
-    <div className="flex w-full flex-col overflow-hidden">
+    <div className="mt-5 flex w-full flex-col overflow-hidden">
       {/* Table */}
       <div className="mb-2 w-full bg-white">
         <div className="h-125 overflow-hidden rounded-lg border border-[#E8E8E8]">
