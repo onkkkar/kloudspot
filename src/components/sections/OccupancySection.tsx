@@ -1,53 +1,6 @@
-import { TrendingUp, TrendingDown } from "lucide-react";
 import { useDwellTime, useFootfall, useOccupancy } from "../../hooks";
 import { useMemo, useState, useEffect } from "react";
-
-// Occupancy Card Props
-interface OccupancyCardProps {
-  title: string;
-  value: string;
-  trend: "up" | "down";
-  percentage: string;
-  comparisonText: string;
-  isLoading?: boolean;
-}
-
-function OccupancyCard({
-  title,
-  value,
-  trend,
-  percentage,
-  comparisonText,
-  isLoading = false,
-}: OccupancyCardProps) {
-  const isUp = trend === "up";
-  const TrendIcon = isUp ? TrendingUp : TrendingDown;
-  const trendColor = isUp ? "text-green-600" : "text-red-600";
-
-  return (
-    <div className="relative rounded-lg border border-gray-200 bg-white p-4">
-      <h3 className="mb-3 text-sm font-normal text-[#1E1E1F]">{title}</h3>
-      <div className="mb-3 text-3xl font-bold text-[#1E1E1F]">
-        {isLoading ? (
-          <span className="animate-pulse text-gray-400">...</span>
-        ) : (
-          value
-        )}
-      </div>
-      <div className="flex flex-col items-start gap-1.5 text-left">
-        <div>
-          <TrendIcon className={`h-4 w-4 ${trendColor}`} strokeWidth={2.5} />
-        </div>
-        <div className="flex items-center gap-1.5">
-          <span className={`text-sm font-medium ${trendColor}`}>
-            {percentage}
-          </span>
-          <span className="text-sm text-gray-500">{comparisonText}</span>
-        </div>
-      </div>
-    </div>
-  );
-}
+import { StatCard } from "../ui";
 
 // Formats dwell time from minutes to "XXmin XXsec" format
 function formatDwellTime(avgDwellMinutes: number): string {
@@ -92,6 +45,38 @@ export function OccupancySection() {
     };
   }, []);
 
+  // Calculate yesterday's UTC time range for comparison
+  const yesterdayTimeRange = useMemo(() => {
+    const now = new Date();
+    const startOfYesterday = new Date(
+      Date.UTC(
+        now.getUTCFullYear(),
+        now.getUTCMonth(),
+        now.getUTCDate() - 1,
+        0,
+        0,
+        0,
+        0,
+      ),
+    );
+    const endOfYesterday = new Date(
+      Date.UTC(
+        now.getUTCFullYear(),
+        now.getUTCMonth(),
+        now.getUTCDate() - 1,
+        23,
+        59,
+        59,
+        999,
+      ),
+    );
+
+    return {
+      fromUtc: startOfYesterday.getTime(),
+      toUtc: endOfYesterday.getTime(),
+    };
+  }, []);
+
   // Fetch dwell time data
   const {
     data: dwellTimeData,
@@ -128,7 +113,7 @@ export function OccupancySection() {
     },
   );
 
-  // Fetch occupancy data
+  // Fetch occupancy data for today
   const {
     data: occupancyData,
     isLoading: isOccupancyLoading,
@@ -144,6 +129,46 @@ export function OccupancySection() {
     {
       refetchInterval: 30000,
     },
+  );
+
+  // Fetch yesterday's data for comparison
+  const {
+    data: yesterdayOccupancyData,
+    isLoading: isYesterdayOccupancyLoading,
+  } = useOccupancy(
+    siteId
+      ? {
+          siteId,
+          fromUtc: yesterdayTimeRange.fromUtc,
+          toUtc: yesterdayTimeRange.toUtc,
+        }
+      : null,
+  );
+
+  // Fetch yesterday's footfall for comparison
+  const { data: yesterdayFootfallData, isLoading: isYesterdayFootfallLoading } =
+    useFootfall(
+      siteId
+        ? {
+            siteId,
+            fromUtc: yesterdayTimeRange.fromUtc,
+            toUtc: yesterdayTimeRange.toUtc,
+          }
+        : null,
+    );
+
+  // Fetch yesterday's dwell time for comparison
+  const {
+    data: yesterdayDwellTimeData,
+    isLoading: isYesterdayDwellTimeLoading,
+  } = useDwellTime(
+    siteId
+      ? {
+          siteId,
+          fromUtc: yesterdayTimeRange.fromUtc,
+          toUtc: yesterdayTimeRange.toUtc,
+        }
+      : null,
   );
 
   // Update siteId from API response when available
@@ -205,31 +230,127 @@ export function OccupancySection() {
     return lastBucket ? Math.round(lastBucket.avg).toString() : "734";
   }, [occupancyData, occupancyError]);
 
+  // Calculate percentage change for Live Occupancy
+  const occupancyTrend = useMemo(() => {
+    if (
+      !occupancyData?.buckets ||
+      !yesterdayOccupancyData?.buckets ||
+      isYesterdayOccupancyLoading
+    ) {
+      return { trend: "up" as const, percentage: "10% More" };
+    }
+
+    // Get today's average (most recent non-zero)
+    let todayValue = 0;
+    for (let i = occupancyData.buckets.length - 1; i >= 0; i--) {
+      if (occupancyData.buckets[i].avg > 0) {
+        todayValue = occupancyData.buckets[i].avg;
+        break;
+      }
+    }
+
+    // Get yesterday's average (most recent non-zero)
+    let yesterdayValue = 0;
+    for (let i = yesterdayOccupancyData.buckets.length - 1; i >= 0; i--) {
+      if (yesterdayOccupancyData.buckets[i].avg > 0) {
+        yesterdayValue = yesterdayOccupancyData.buckets[i].avg;
+        break;
+      }
+    }
+
+    if (yesterdayValue === 0) {
+      return { trend: "up" as const, percentage: "10% More" };
+    }
+
+    const change = ((todayValue - yesterdayValue) / yesterdayValue) * 100;
+    const absChange = Math.abs(change);
+    const isUp = change >= 0;
+
+    return {
+      trend: isUp ? ("up" as const) : ("down" as const),
+      percentage: `${Math.round(absChange)}% ${isUp ? "More" : "Less"}`,
+    };
+  }, [occupancyData, yesterdayOccupancyData, isYesterdayOccupancyLoading]);
+
+  // Calculate percentage change for Footfall
+  const footfallTrend = useMemo(() => {
+    if (
+      !footfallData?.footfall ||
+      !yesterdayFootfallData?.footfall ||
+      isYesterdayFootfallLoading
+    ) {
+      return { trend: "down" as const, percentage: "10% Less" };
+    }
+
+    const todayValue = footfallData.footfall;
+    const yesterdayValue = yesterdayFootfallData.footfall;
+
+    if (yesterdayValue === 0) {
+      return { trend: "up" as const, percentage: "10% More" };
+    }
+
+    const change = ((todayValue - yesterdayValue) / yesterdayValue) * 100;
+    const absChange = Math.abs(change);
+    const isUp = change >= 0;
+
+    return {
+      trend: isUp ? ("up" as const) : ("down" as const),
+      percentage: `${Math.round(absChange)}% ${isUp ? "More" : "Less"}`,
+    };
+  }, [footfallData, yesterdayFootfallData, isYesterdayFootfallLoading]);
+
+  // Calculate percentage change for Dwell Time
+  const dwellTimeTrend = useMemo(() => {
+    if (
+      !dwellTimeData?.avgDwellMinutes ||
+      !yesterdayDwellTimeData?.avgDwellMinutes ||
+      isYesterdayDwellTimeLoading
+    ) {
+      return { trend: "up" as const, percentage: "6% More" };
+    }
+
+    const todayValue = dwellTimeData.avgDwellMinutes;
+    const yesterdayValue = yesterdayDwellTimeData.avgDwellMinutes;
+
+    if (yesterdayValue === 0) {
+      return { trend: "up" as const, percentage: "6% More" };
+    }
+
+    const change = ((todayValue - yesterdayValue) / yesterdayValue) * 100;
+    const absChange = Math.abs(change);
+    const isUp = change >= 0;
+
+    return {
+      trend: isUp ? ("up" as const) : ("down" as const),
+      percentage: `${Math.round(absChange)}% ${isUp ? "More" : "Less"}`,
+    };
+  }, [dwellTimeData, yesterdayDwellTimeData, isYesterdayDwellTimeLoading]);
+
   return (
     <div className="grid w-full grid-cols-3 gap-4">
-      <OccupancyCard
+      <StatCard
         title="Live Occupancy"
         value={liveOccupancyValue}
-        trend="up"
-        percentage="10% More"
+        trend={occupancyTrend.trend}
+        percentage={occupancyTrend.percentage}
         comparisonText="than yesterday"
-        isLoading={isOccupancyLoading}
+        isLoading={isOccupancyLoading || isYesterdayOccupancyLoading}
       />
-      <OccupancyCard
+      <StatCard
         title="Today's Footfall"
         value={footfallValue}
-        trend="down"
-        percentage="10% Less"
+        trend={footfallTrend.trend}
+        percentage={footfallTrend.percentage}
         comparisonText="than yesterday"
-        isLoading={isFootfallLoading}
+        isLoading={isFootfallLoading || isYesterdayFootfallLoading}
       />
-      <OccupancyCard
+      <StatCard
         title="Avg Dwell Time"
         value={dwellTimeValue}
-        trend="up"
-        percentage="6% More"
+        trend={dwellTimeTrend.trend}
+        percentage={dwellTimeTrend.percentage}
         comparisonText="than yesterday"
-        isLoading={isDwellTimeLoading}
+        isLoading={isDwellTimeLoading || isYesterdayDwellTimeLoading}
       />
     </div>
   );

@@ -14,6 +14,7 @@ import {
 } from "recharts";
 import { FaFemale, FaMale } from "react-icons/fa";
 import { useDemographics } from "../../hooks/useDemographics";
+import { LoadingSpinner } from "../ui";
 
 export function DemographicSection() {
   // Extract siteId from API for subsequent calls
@@ -232,7 +233,7 @@ export function DemographicSection() {
         <div className="min-h-0 flex-1">
           {isDemographicsLoading ? (
             <div className="flex h-full items-center justify-center">
-              <div className="h-8 w-8 animate-spin rounded-full border-4 border-gray-200 border-t-[#009490]"></div>
+              <LoadingSpinner size="md" />
             </div>
           ) : demographicsError ? (
             <div className="flex h-full items-center justify-center text-red-500">

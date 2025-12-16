@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useCrowdEntries } from "../../hooks/useCrowdEntries";
+import { LoadingSpinner } from "../ui";
 
 export function CrowdEntriesTable() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -204,12 +205,11 @@ export function CrowdEntriesTable() {
               {isLoading ? (
                 <tr className="h-full">
                   <td colSpan={5} className="h-full px-4">
-                    <div className="flex h-full min-h-[400px] flex-col items-center justify-center gap-3">
-                      <div className="h-8 w-8 animate-spin rounded-full border-4 border-gray-200 border-t-[#009490]"></div>
-                      <span className="animate-pulse text-sm text-gray-500">
-                        Loading data
-                      </span>
-                    </div>
+                    <LoadingSpinner
+                      size="md"
+                      text="Loading data"
+                      className="min-h-[400px]"
+                    />
                   </td>
                 </tr>
               ) : error ? (

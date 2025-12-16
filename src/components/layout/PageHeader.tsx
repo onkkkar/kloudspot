@@ -48,7 +48,7 @@ export function PageHeader({ title, dateText = "Today" }: PageHeaderProps) {
   };
 
   return (
-    <div className="flex h-11 items-center justify-between px-8">
+    <div className="mb-2 flex h-11 items-center justify-between px-8">
       {/* Left: Title */}
       <h1 className="text-xl text-[20px] font-medium text-[#1E1E1F]">
         {title}

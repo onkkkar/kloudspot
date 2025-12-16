@@ -11,6 +11,7 @@ import {
 } from "recharts";
 import { useOccupancy } from "../../hooks";
 import { useMemo, useState, useEffect } from "react";
+import { LoadingSpinner } from "../ui";
 
 // Custom label component for LIVE indicator
 interface LiveLabelProps {
@@ -168,7 +169,7 @@ export function OccupancyChartSection() {
           </div>
         </div>
         <div className="flex flex-1 items-center justify-center">
-          <div className="h-8 w-8 animate-spin rounded-full border-4 border-gray-200 border-t-[#009490]"></div>
+          <LoadingSpinner size="md" />
         </div>
       </div>
     );
