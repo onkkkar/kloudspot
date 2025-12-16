@@ -50,7 +50,7 @@ function AppLayout() {
         <PageHeader title={getPageTitle()} />
 
         {/* Content Area */}
-        <div className="scrollbar-hide flex-1 overflow-y-auto px-4">
+        <div className="scrollbar-hide flex-1 overflow-x-hidden overflow-y-auto">
           <Outlet />
         </div>
       </main>

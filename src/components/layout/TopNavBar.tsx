@@ -56,9 +56,9 @@ export function TopNavBar() {
         onClose={() => setIsNotificationsOpen(false)}
       />
 
-      <nav className="mb-6 flex h-16 w-full items-center justify-between bg-white shadow-sm">
+      <nav className="mb-6 flex h-16 w-full flex-col items-center justify-between gap-2 bg-white shadow-sm sm:flex-row sm:gap-0">
         {/* Left: Crowd Solution with Dropdown */}
-        <div className="flex items-center gap-3 p-3">
+        <div className="flex w-full items-center justify-between gap-3 p-3 sm:w-auto">
           <span className="text-lg text-[18px] font-medium text-[#1E1E1F]">
             Crowd Solutions
           </span>
@@ -91,7 +91,7 @@ export function TopNavBar() {
         </div>
 
         {/* Right: Bell and Profile Icons */}
-        <div className="relative flex items-center gap-4 p-3">
+        <div className="relative flex w-full items-center justify-end gap-4 p-3 sm:w-auto">
           <button
             onClick={() => setIsNotificationsOpen(!isNotificationsOpen)}
             className="relative flex h-8 w-8 items-center justify-center rounded-md transition-colors hover:bg-gray-100"

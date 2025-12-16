@@ -327,7 +327,7 @@ export function OccupancySection() {
   }, [dwellTimeData, yesterdayDwellTimeData, isYesterdayDwellTimeLoading]);
 
   return (
-    <div className="grid w-full grid-cols-3 gap-4">
+    <div className="grid w-full grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-3">
       <StatCard
         title="Live Occupancy"
         value={liveOccupancyValue}

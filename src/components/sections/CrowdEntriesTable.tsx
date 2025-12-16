@@ -177,9 +177,9 @@ export function CrowdEntriesTable() {
   return (
     <div className="mt-5 flex w-full flex-col overflow-hidden">
       {/* Table */}
-      <div className="mb-2 w-full bg-white">
-        <div className="h-125 overflow-hidden rounded-lg border border-[#E8E8E8]">
-          <table className="h-full w-full table-fixed border-collapse">
+      <div className="mb-2 w-full overflow-x-auto bg-white">
+        <div className="min-h-[400px] overflow-hidden rounded-lg border border-[#E8E8E8] lg:h-125">
+          <table className="h-full w-full min-w-[600px] table-fixed border-collapse">
             {/* Header */}
             <thead>
               <tr className="bg-[#E8E8E8]">

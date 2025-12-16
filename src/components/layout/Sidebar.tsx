@@ -20,7 +20,7 @@ export function Sidebar({ isSidebarOpen, setIsSidebarOpen }: SidebarProps) {
       {/* Sidebar */}
       <aside
         className={`${
-          isSidebarOpen ? "w-54 translate-x-0" : "w-0 -translate-x-full"
+          isSidebarOpen ? "w-48 translate-x-0 lg:w-54" : "w-0 -translate-x-full"
         } from-primary-black via-primary-green to-primary-black flex h-screen flex-col overflow-hidden bg-linear-to-b transition-all duration-300 ease-in-out`}
       >
         {/* Header with Logo and Hamburger */}
@@ -69,7 +69,7 @@ export function Sidebar({ isSidebarOpen, setIsSidebarOpen }: SidebarProps) {
         </nav>
 
         {/* Logout Button - Bottom Left */}
-        <div className="mt-auto h-12.5 w-54 px-4 pb-4">
+        <div className="mt-auto h-12.5 w-full px-4 pb-4">
           <button
             onClick={logout}
             className="flex items-center gap-4 text-left text-base font-medium text-white transition-colors hover:opacity-80"

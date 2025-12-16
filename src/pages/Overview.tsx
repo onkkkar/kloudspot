@@ -4,26 +4,29 @@ import { DemographicSection } from "../components/sections/DemographicSection";
 
 export function Overview() {
   return (
-    <div className="flex flex-col gap-3 px-4 pt-5">
+    <div className="flex flex-col gap-4 px-2 pt-5 sm:px-4 lg:gap-6 lg:px-6">
       {/* Occupancy Stats Section */}
-      <div className="flex flex-col">
+      <section className="flex flex-col" aria-label="Occupancy statistics">
         <div className="mb-3">
           <h2 className="text-lg font-medium text-[#1E1E1F]">Occupancy</h2>
         </div>
         <div className="min-h-[160px] w-full">
           <OccupancySection />
         </div>
-      </div>
+      </section>
 
       {/* Overall Occupancy Chart Section */}
-      <div className="flex flex-col">
-        <div className="h-[374px] w-full">
+      <section className="flex flex-col" aria-label="Overall occupancy chart">
+        <div className="min-h-[300px] w-full lg:h-[374px]">
           <OccupancyChartSection />
         </div>
-      </div>
+      </section>
 
       {/* Demographics Section */}
-      <div className="mb-10 flex flex-col">
+      <section
+        className="mb-10 flex flex-col"
+        aria-label="Demographics analysis"
+      >
         <div className="mb-3">
           <h2 className="mt-3 text-lg font-medium text-[#1E1E1F]">
             Demographics
@@ -32,7 +35,7 @@ export function Overview() {
         <div className="w-full">
           <DemographicSection />
         </div>
-      </div>
+      </section>
     </div>
   );
 }

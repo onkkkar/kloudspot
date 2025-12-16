@@ -136,13 +136,13 @@ export function DemographicSection() {
     return Math.ceil(max / 50) * 50; // Round up to nearest 50
   }, [chartData]);
   return (
-    <div className="flex gap-2">
+    <div className="flex flex-col gap-2 lg:flex-row">
       {/* Chart of Demographics - Donut Chart */}
-      <div className="2-82 flex h-93.75 shrink-0 flex-col rounded-lg border border-gray-200 bg-white p-4">
+      <div className="flex h-auto min-h-[300px] shrink-0 flex-col rounded-lg border border-gray-200 bg-white p-4 lg:h-93.75 lg:w-82">
         <h2 className="mb-6 text-lg font-medium text-[#1E1E1F]">
           Chart of Demographics
         </h2>
-        <div className="flex h-76.75 w-74 flex-col items-start gap-4">
+        <div className="flex h-auto w-full flex-col items-start gap-4 lg:h-76.75 lg:w-74">
           {isDemographicsLoading ? (
             <div className="flex h-44 w-44 items-center justify-center">
               <div className="h-8 w-8 animate-spin rounded-full border-4 border-gray-200 border-t-[#009490]"></div>
@@ -214,7 +214,7 @@ export function DemographicSection() {
       </div>
 
       {/* Demographics Analysis - Line Chart */}
-      <div className="flex h-108 flex-1 flex-col rounded-lg border border-gray-200 bg-white p-4">
+      <div className="flex min-h-[400px] flex-1 flex-col rounded-lg border border-gray-200 bg-white p-4 lg:h-108">
         <div className="mb-3 flex items-center justify-between">
           <h2 className="text-lg font-medium text-[#1E1E1F]">
             Demographics Analysis
