@@ -7,6 +7,8 @@ import type {
   FootfallRequest,
   OccupancyResponse,
   OccupancyRequest,
+  DemographicsResponse,
+  DemographicsRequest,
 } from "../types";
 
 export const getDwellTime = async (
@@ -58,6 +60,24 @@ export const getOccupancy = async (
     return response.data;
   } catch (err: unknown) {
     console.error("Occupancy error:", err);
+    throw err;
+  }
+};
+
+// Demographics API endpoints
+export const getDemographics = async (
+  request: DemographicsRequest,
+): Promise<DemographicsResponse> => {
+  try {
+    const response = await Axios.post<DemographicsResponse>(
+      "analytics/demographics",
+      request,
+    );
+
+    // console.log("Demographics response:", response.data);
+    return response.data;
+  } catch (err: unknown) {
+    console.error("Demographics error:", err);
     throw err;
   }
 };

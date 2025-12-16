@@ -48,3 +48,25 @@ export interface OccupancyResponse {
   timezone: string;
   buckets: OccupancyBucket[];
 }
+
+// Demographics API types
+export interface DemographicsRequest {
+  siteId: string;
+  fromUtc: number;
+  toUtc: number;
+}
+
+export interface DemographicsBucket {
+  utc: number;
+  local: string;
+  male: number;
+  female: number;
+}
+
+export interface DemographicsResponse {
+  siteId: string;
+  fromUtc: number;
+  toUtc: number;
+  timezone: string;
+  buckets: DemographicsBucket[];
+}

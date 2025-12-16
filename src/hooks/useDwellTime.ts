@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getDwellTime } from "../api/overview.api";
 import type { DwellTimeRequest, DwellTimeResponse } from "../types";
 
+// Hook to fetch dwell time data
 export const useDwellTime = (
   request: DwellTimeRequest | null,
   options?: {

@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getOccupancy } from "../api/overview.api";
 import type { OccupancyRequest, OccupancyResponse } from "../types";
 
+// Hook to fetch occupancy data
 export const useOccupancy = (
   request: OccupancyRequest | null,
   options?: {

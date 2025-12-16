@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getFootfall } from "../api/overview.api";
 import type { FootfallRequest, FootfallResponse } from "../types";
 
+// Hook to fetch footfall data
 export const useFootfall = (
   request: FootfallRequest | null,
   options?: {
