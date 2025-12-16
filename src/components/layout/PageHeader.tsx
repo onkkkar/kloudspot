@@ -58,7 +58,7 @@ export function PageHeader({ title, dateText = "Today" }: PageHeaderProps) {
       <div className="relative w-full sm:w-auto">
         <button
           onClick={handleButtonClick}
-          className="flex h-10 w-full items-center justify-center gap-1 rounded-md border border-gray-300 bg-white py-2 pr-3 pl-3 transition-colors hover:bg-gray-50 sm:w-50"
+          className="flex h-10 w-full items-center justify-start gap-1 rounded-md border border-gray-300 bg-white py-2 pr-3 pl-3 transition-colors hover:bg-gray-50 sm:w-50"
         >
           <Calendar className="h-5 w-5 text-[#1E1E1F]" strokeWidth={1.5} />
           <span className="text-base font-normal text-[#1E1E1F]">
