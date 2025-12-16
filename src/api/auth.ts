@@ -19,6 +19,8 @@ export const login = async (
     // Store token in localStorage (interceptor will use this)
     if (response.data.token) {
       localStorage.setItem("authToken", response.data.token);
+      // Store email for profile avatar initials
+      localStorage.setItem("userEmail", credentials.email);
     }
 
     return response.data;

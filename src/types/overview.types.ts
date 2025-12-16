@@ -70,3 +70,37 @@ export interface DemographicsResponse {
   timezone: string;
   buckets: DemographicsBucket[];
 }
+
+// Entry-Exit API types
+export interface EntryExitRequest {
+  siteId: string;
+  fromUtc: number;
+  toUtc: number;
+  pageNumber: number;
+  pageSize: number;
+}
+
+export interface EntryExitRecord {
+  personId: string;
+  personName: string;
+  gender: "male" | "female";
+  zoneId: string;
+  zoneName: string;
+  severity: "low" | "medium" | "high";
+  entryUtc: number;
+  entryLocal: string;
+  exitUtc: number | null;
+  exitLocal: string | null;
+  dwellMinutes: number | null;
+}
+
+export interface EntryExitResponse {
+  siteId: string;
+  fromUtc: number;
+  toUtc: number;
+  pageSize: number;
+  pageNumber: number;
+  totalRecords: number;
+  totalPages: number;
+  records: EntryExitRecord[];
+}

@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { Bell, MapPin, ChevronDown, User, LogOut } from "lucide-react";
 import { PiLineVertical } from "react-icons/pi";
 import { Notifications } from "./Notifications";
+import { notifications } from "../../constants/notifications";
 import { useNavigate } from "@tanstack/react-router";
 import { logout } from "../../api/auth";
 
@@ -11,6 +12,25 @@ export function TopNavBar() {
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
   const profileDropdownRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
+
+  // Get admin initials (from stored email or default to "Admin")
+  const getAdminInitials = (): string => {
+    // Try to get email from localStorage if stored during login
+    const storedEmail = localStorage.getItem("userEmail");
+    if (storedEmail) {
+      const emailParts = storedEmail.split("@")[0].split(".");
+      if (emailParts.length >= 2) {
+        return (
+          emailParts[0].charAt(0).toUpperCase() +
+          emailParts[1].charAt(0).toUpperCase()
+        );
+      }
+      return emailParts[0].charAt(0).toUpperCase();
+    }
+    return "A"; // Default to "A" for Admin
+  };
+
+  const adminInitials = getAdminInitials();
 
   // Close profile dropdown when clicking outside
   useEffect(() => {
@@ -74,26 +94,22 @@ export function TopNavBar() {
         <div className="relative flex items-center gap-4 p-3">
           <button
             onClick={() => setIsNotificationsOpen(!isNotificationsOpen)}
-            className="flex h-8 w-8 items-center justify-center rounded-md transition-colors hover:bg-gray-100"
+            className="relative flex h-8 w-8 items-center justify-center rounded-md transition-colors hover:bg-gray-100"
           >
             <Bell className="h-7 w-7" strokeWidth={1.5} />
+            {/* Red dot indicator*/}
+            {notifications.length > 0 && (
+              <span className="absolute top-0 right-1 h-2.5 w-2.5 rounded-full border border-white bg-red-500"></span>
+            )}
           </button>
 
           <div className="relative" ref={profileDropdownRef}>
             <button
               onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
-              className="bg-primary-green flex h-8 w-8 items-center justify-center overflow-hidden rounded-full transition-colors hover:opacity-80"
+              className="flex h-8 w-8 items-center justify-center rounded-full bg-[#009490] text-xs font-medium text-white transition-colors hover:opacity-80"
               aria-label="Profile menu"
             >
-              <img
-                src="/images/profile.png"
-                alt="Profile"
-                className="h-full w-full object-cover"
-                onError={(e) => {
-                  const target = e.target as HTMLImageElement;
-                  target.style.display = "none";
-                }}
-              />
+              {adminInitials}
             </button>
 
             {/* Profile Dropdown Menu */}
