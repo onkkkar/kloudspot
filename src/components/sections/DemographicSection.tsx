@@ -129,15 +129,17 @@ export function DemographicSection() {
   const femalePercentage =
     donutData.find((d) => d.name === "Females")?.value || 0;
 
-  // Calculate max value for Y-axis domain
+  // Calculate max value for Y-axis
   const maxValue = useMemo(() => {
     if (!chartData.length) return 100;
     const max = Math.max(...chartData.map((d) => Math.max(d.male, d.female)));
-    return Math.ceil(max / 50) * 50; // Round up to nearest 50
+
+    // Round up to nearest 50
+    return Math.ceil(max / 50) * 50;
   }, [chartData]);
   return (
     <div className="flex flex-col gap-2 lg:flex-row">
-      {/* Chart of Demographics - Donut Chart */}
+      {/* Donut Chart */}
       <div className="flex h-auto min-h-[300px] shrink-0 flex-col rounded-lg border border-gray-200 bg-white p-4 lg:h-93.75 lg:w-82">
         <h2 className="mb-6 text-lg font-medium text-[#1E1E1F]">
           Chart of Demographics
@@ -213,7 +215,7 @@ export function DemographicSection() {
         </div>
       </div>
 
-      {/* Demographics Analysis - Line Chart */}
+      {/* Line Chart */}
       <div className="flex min-h-[400px] flex-1 flex-col rounded-lg border border-gray-200 bg-white p-4 lg:h-108">
         <div className="mb-3 flex items-center justify-between">
           <h2 className="text-lg font-medium text-[#1E1E1F]">

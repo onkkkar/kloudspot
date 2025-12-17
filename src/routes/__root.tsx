@@ -3,19 +3,20 @@ import { QueryClientProvider } from "@tanstack/react-query";
 // import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { queryClient } from "../queryClient";
-
-const showDevtools = import.meta.env.VITE_SHOW_DEVTOOLS;
+import { SocketAlertsProvider } from "../contexts/SocketAlertsContext";
 
 const RootLayout = () => (
   <QueryClientProvider client={queryClient}>
-    <Outlet />
+    <SocketAlertsProvider>
+      <Outlet />
 
-    {showDevtools && (
-      <>
-        {/* <TanStackRouterDevtools /> */}
-        <ReactQueryDevtools initialIsOpen={false} />
-      </>
-    )}
+      {import.meta.env.VITE_SHOW_DEVTOOLS && (
+        <>
+          {/* <TanStackRouterDevtools /> */}
+          <ReactQueryDevtools initialIsOpen={false} />
+        </>
+      )}
+    </SocketAlertsProvider>
   </QueryClientProvider>
 );
 

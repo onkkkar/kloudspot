@@ -24,6 +24,7 @@ interface LiveLabelProps {
   value?: string;
 }
 
+// Custom label component for LIVE indicator
 const LiveLabel = ({ viewBox, value }: LiveLabelProps) => {
   if (viewBox && viewBox.x !== undefined && viewBox.y !== undefined) {
     const rectX = viewBox.x - 9;
@@ -62,12 +63,12 @@ const LiveLabel = ({ viewBox, value }: LiveLabelProps) => {
 };
 
 export function OccupancyChartSection() {
-  // Initialize siteId with fallback value, will be updated from API response
+  // Site Id from API response / default value
   const [siteId, setSiteId] = useState<string | null>(
     "b0fa4e2a-2159-42e7-b97b-2a9d481158f6",
   );
 
-  // Calculate today's UTC time range - memoized to prevent recalculation on every render
+  // Calculate today's UTC time range
   const timeRange = useMemo(() => {
     const now = new Date();
     const startOfToday = new Date(
@@ -89,7 +90,7 @@ export function OccupancyChartSection() {
     };
   }, []);
 
-  // Fetch occupancy data from API with auto-refetch every 30 sec
+  // Fetch occupancy data from API (autorefresh every 30 seconds)
   const {
     data: occupancyData,
     isLoading,

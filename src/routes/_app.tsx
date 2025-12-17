@@ -1,14 +1,16 @@
-/* eslint-disable react-refresh/only-export-components */
 import {
   createFileRoute,
   Outlet,
   useLocation,
   redirect,
 } from "@tanstack/react-router";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { TopNavBar } from "../components/layout/TopNavBar";
 import { Sidebar } from "../components/layout/Sidebar";
 import { PageHeader } from "../components/layout/PageHeader";
+import { ApiPerformanceBanner } from "../components/ui/ApiPerformanceBanner";
+import { useApiTimings } from "../hooks/useApiTimings";
+import { apiTimingTracker } from "../utils/apiTimings";
 import { isAuthenticated } from "../api/auth";
 
 export const Route = createFileRoute("/_app")({
@@ -26,6 +28,19 @@ export const Route = createFileRoute("/_app")({
 function AppLayout() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const location = useLocation();
+  const apiTimings = useApiTimings();
+  const prevPathRef = useRef(location.pathname);
+
+  // Derive bannerKey from pathname (resets banner on route change)
+  const bannerKey = location.pathname;
+
+  // Clear timings on route change
+  useEffect(() => {
+    if (prevPathRef.current !== location.pathname) {
+      apiTimingTracker.clear();
+      prevPathRef.current = location.pathname;
+    }
+  }, [location.pathname]);
 
   // Determine page title based on route
   const getPageTitle = () => {
@@ -54,6 +69,13 @@ function AppLayout() {
           <Outlet />
         </div>
       </main>
+
+      {/* API Performance Banner - shows server response times */}
+      <ApiPerformanceBanner
+        key={bannerKey}
+        timings={apiTimings}
+        show={apiTimings.length >= 1}
+      />
     </div>
   );
 }

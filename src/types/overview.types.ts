@@ -5,6 +5,7 @@ export interface DwellTimeRequest {
   toUtc: number;
 }
 
+// Dwell Time response type
 export interface DwellTimeResponse {
   siteId: string;
   toUtc: number;
@@ -21,6 +22,7 @@ export interface FootfallRequest {
   toUtc: number;
 }
 
+// Footfall response type
 export interface FootfallResponse {
   siteId: string;
   fromUtc: number;
@@ -35,12 +37,14 @@ export interface OccupancyRequest {
   toUtc: number;
 }
 
+// Occupancy bucket type
 export interface OccupancyBucket {
   utc: number;
   local: string;
   avg: number;
 }
 
+// Occupancy response type
 export interface OccupancyResponse {
   siteId: string;
   fromUtc: number;
@@ -56,6 +60,7 @@ export interface DemographicsRequest {
   toUtc: number;
 }
 
+// Demographics bucket type
 export interface DemographicsBucket {
   utc: number;
   local: string;
@@ -63,6 +68,7 @@ export interface DemographicsBucket {
   female: number;
 }
 
+// Demographics response type
 export interface DemographicsResponse {
   siteId: string;
   fromUtc: number;
@@ -80,6 +86,7 @@ export interface EntryExitRequest {
   pageSize: number;
 }
 
+// Entry-Exit record type
 export interface EntryExitRecord {
   personId: string;
   personName: string;
@@ -94,6 +101,7 @@ export interface EntryExitRecord {
   dwellMinutes: number | null;
 }
 
+// Entry-Exit response type
 export interface EntryExitResponse {
   siteId: string;
   fromUtc: number;

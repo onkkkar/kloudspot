@@ -10,74 +10,59 @@ import type {
   DemographicsResponse,
   DemographicsRequest,
 } from "../types";
+import { apiTimingTracker } from "../utils/apiTimings";
 
 export const getDwellTime = async (
   request: DwellTimeRequest,
 ): Promise<DwellTimeResponse> => {
-  try {
-    const response = await Axios.post<DwellTimeResponse>(
-      "analytics/dwell",
-      request,
-    );
-
-    // console.log("Dwell Time response:", response.data);
-    return response.data;
-  } catch (err: unknown) {
-    console.error("Dwell Time error:", err);
-    throw err;
-  }
+  const startTime = performance.now();
+  const response = await Axios.post<DwellTimeResponse>(
+    "analytics/dwell",
+    request,
+  );
+  const duration = performance.now() - startTime;
+  apiTimingTracker.record("Dwell Time", duration);
+  return response.data;
 };
 
 // Footfall API endpoints
 export const getFootfall = async (
   request: FootfallRequest,
 ): Promise<FootfallResponse> => {
-  try {
-    const response = await Axios.post<FootfallResponse>(
-      "analytics/footfall",
-      request,
-    );
-
-    // console.log("Footfall response:", response.data);
-    return response.data;
-  } catch (err: unknown) {
-    console.error("Footfall error:", err);
-    throw err;
-  }
+  const startTime = performance.now();
+  const response = await Axios.post<FootfallResponse>(
+    "analytics/footfall",
+    request,
+  );
+  const duration = performance.now() - startTime;
+  apiTimingTracker.record("Footfall", duration);
+  return response.data;
 };
 
 // Occupancy API endpoints
 export const getOccupancy = async (
   request: OccupancyRequest,
 ): Promise<OccupancyResponse> => {
-  try {
-    const response = await Axios.post<OccupancyResponse>(
-      "analytics/occupancy",
-      request,
-    );
-
-    // console.log("Occupancy response:", response.data);
-    return response.data;
-  } catch (err: unknown) {
-    console.error("Occupancy error:", err);
-    throw err;
-  }
+  const startTime = performance.now();
+  const response = await Axios.post<OccupancyResponse>(
+    "analytics/occupancy",
+    request,
+  );
+  const duration = performance.now() - startTime;
+  apiTimingTracker.record("Occupancy", duration);
+  return response.data;
 };
 
 // Demographics API endpoints
 export const getDemographics = async (
   request: DemographicsRequest,
 ): Promise<DemographicsResponse> => {
-  try {
-    const response = await Axios.post<DemographicsResponse>(
-      "analytics/demographics",
-      request,
-    );
-
-    // console.log("Demographics response:", response.data);
-    return response.data;
-  } catch (err: unknown) {
-    console.error("Demographics error:", err);
-    throw err;
-  }
+  const startTime = performance.now();
+  const response = await Axios.post<DemographicsResponse>(
+    "analytics/demographics",
+    request,
+  );
+  const duration = performance.now() - startTime;
+  apiTimingTracker.record("Demographics", duration);
+  return response.data;
 };

@@ -1,5 +1,6 @@
 import Axios from "./interceptor";
 import type { LoginRequest, LoginResponse } from "../types";
+import { socketService } from "../services/socket.service";
 
 /**
  * Login function - Authenticates user and stores token
@@ -21,6 +22,9 @@ export const login = async (
       localStorage.setItem("authToken", response.data.token);
       // Store email for profile avatar initials
       localStorage.setItem("userEmail", credentials.email);
+
+      // Connect to Socket.IO after successful login
+      socketService.connect();
     }
 
     return response.data;
@@ -56,9 +60,12 @@ export const login = async (
 };
 
 /**
- * Logout function - Removes token from localStorage
+ * Logout function - Removes token from localStorage and disconnects socket
  */
 export const logout = (): void => {
+  // Disconnect Socket.IO before logout
+  socketService.disconnect();
+
   // Remove token from localStorage
   localStorage.removeItem("authToken");
 
