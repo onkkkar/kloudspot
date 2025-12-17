@@ -1,66 +1,116 @@
-# Kloudspot
+# Kloudspot Dashboard
 
-A React + TypeScript application built with Vite, TanStack Router, and TailwindCSS.
+A real-time crowd analytics and occupancy monitoring dashboard built with React, TypeScript, and modern web technologies.
 
-## Prerequisites
+![Kloudspot](public/images/logo.png)
 
-- Node.js (v18 or higher recommended)
-- npm or yarn
+## 🚀 Features
 
-## Setup Instructions
+- **Real-time Occupancy Monitoring** - Live updates via Socket.io
+- **Crowd Analytics** - Track entries, demographics, and dwell time
+- **Interactive Charts** - Visualize data with Recharts
+- **Responsive Design** - Works on desktop and mobile
+- **Type-safe Routing** - TanStack Router for reliable navigation
 
-1. **Clone the repository**
+---
 
-   ```bash
-   git clone <repository-url>
-   cd Kloudspot
-   ```
+## 📋 Prerequisites
 
-2. **Install dependencies**
+- **Node.js** v18 or higher
+- **npm** (comes with Node.js) or **yarn**
 
-   ```bash
-   npm install
-   ```
+---
 
-3. **Start the development server**
+## ⚙️ Setup Instructions
 
-   ```bash
-   npm run dev
-   ```
+### 1. Clone the repository
 
-   The app will be available at `http://localhost:5173`
+```bash
+git clone https://github.com/onkkkar/kloudspot.git
+cd kloudspot
+```
 
-## Available Scripts
+### 2. Install dependencies
 
-| Command                | Description                  |
-| ---------------------- | ---------------------------- |
-| `npm run dev`          | Start development server     |
-| `npm run build`        | Build for production         |
-| `npm run preview`      | Preview production build     |
-| `npm run lint`         | Run ESLint                   |
-| `npm run typecheck`    | Run TypeScript type checking |
-| `npm run format`       | Format code with Prettier    |
-| `npm run format:check` | Check code formatting        |
+```bash
+npm install
+```
 
-## Tech Stack
+### 3. Configure environment variables
 
-- **React 19** - UI library
-- **TypeScript** - Type safety
-- **Vite** - Build tool
-- **TanStack Router** - Type-safe routing
-- **TanStack Query** - Data fetching & caching
-- **TailwindCSS 4** - Styling
-- **Recharts** - Charts & data visualization
-- **Socket.io Client** - Real-time communication
-- **Axios** - HTTP client
+Create a `.env` file in the root directory:
 
-## Code Quality
+```env
+VITE_BASE_URL=http://localhost:3000/api/
+```
 
-This project uses:
+- Replace `http://localhost:3000/api/` with your actual backend server URL.
 
-- **ESLint** - Linting
-- **Prettier** - Code formatting
-- **Husky** - Git hooks
-- **lint-staged** - Run linters on staged files
+### 4. Start the development server
 
-Pre-commit hooks automatically run linting and formatting on staged files.
+```bash
+npm run dev
+```
+
+The app will be available at **http://localhost:5173**
+
+---
+
+## 🛠️ Tech Stack
+
+| Technology       | Purpose                       |
+| ---------------- | ----------------------------- |
+| React 19         | UI library                    |
+| TypeScript       | Type safety                   |
+| Vite             | Build tool & dev server       |
+| TanStack Router  | Type-safe file-based routing  |
+| TanStack Query   | Data fetching & caching       |
+| TailwindCSS 4    | Utility-first styling         |
+| Recharts         | Charts & data visualization   |
+| Socket.io Client | Real-time WebSocket updates   |
+| Axios            | HTTP client with interceptors |
+
+---
+
+## 📁 Project Structure
+
+```
+src/
+├── api/              # API functions (auth, crowd, overview)
+├── components/
+│   ├── layout/       # Sidebar, TopNavBar, PageHeader
+│   ├── sections/     # Dashboard sections (charts, tables)
+│   └── ui/           # Reusable UI components
+├── contexts/         # React contexts (Socket alerts)
+├── hooks/            # Custom hooks for data fetching
+├── pages/            # Page components
+├── routes/           # TanStack Router route definitions
+├── services/         # Socket.io service
+├── types/            # TypeScript type definitions
+└── utils/            # Utility functions
+```
+
+---
+
+## 🔧 Code Quality
+
+This project enforces code quality with:
+
+- **ESLint** - Linting for consistent code
+- **Prettier** - Automatic code formatting
+- **Husky** - Git hooks for pre-commit checks
+- **lint-staged** - Run linters only on staged files
+
+Pre-commit hooks automatically lint and format your code before each commit.
+
+---
+
+## 🚢 Deployment
+
+The project includes a `vercel.json` for easy deployment to Vercel:
+
+```bash
+npm run build
+```
+
+Then deploy the `dist` folder to your hosting provider.
