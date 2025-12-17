@@ -42,17 +42,26 @@ export function StatCard({
       </div>
       {/* Trend Container */}
       <div className="flex flex-col items-start gap-1.5 text-left">
-        {/* Trend Icon */}
-        <div>
-          <TrendIcon className={`h-4 w-4 ${trendColor}`} strokeWidth={2.5} />
-        </div>
-        {/* Trend % & Comparison Text */}
-        <div className="flex items-center gap-1.5">
-          <span className={`text-sm font-medium ${trendColor}`}>
-            {percentage}
-          </span>
-          <span className="text-sm text-gray-500">{comparisonText}</span>
-        </div>
+        {isLoading ? (
+          <span className="animate-pulse text-xs text-gray-400">...</span>
+        ) : (
+          <>
+            {/* Trend Icon */}
+            <div>
+              <TrendIcon
+                className={`h-4 w-4 ${trendColor}`}
+                strokeWidth={2.5}
+              />
+            </div>
+            {/* Trend % & Comparison Text */}
+            <div className="flex items-center gap-1.5">
+              <span className={`text-sm font-medium ${trendColor}`}>
+                {percentage}
+              </span>
+              <span className="text-sm text-gray-500">{comparisonText}</span>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
